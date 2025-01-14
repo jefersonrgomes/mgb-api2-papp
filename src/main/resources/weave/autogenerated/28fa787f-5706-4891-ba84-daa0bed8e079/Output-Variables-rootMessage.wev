@@ -1,0 +1,56 @@
+%dw 2.0
+
+type auto_28fa787f_5706_4891_ba84_daa0bed8e079_Output_Variables_rootMessage = {|
+  payload: Any, 
+  attributes: com_mule_extensions_amqp_api_message_AmqpAttributes {"typeId": "com.mule.extensions.amqp.api.message.AmqpAttributes",
+  "class": "com.mule.extensions.amqp.api.message.AmqpAttributes",
+  "typeAlias": "AmqpAttributes"}
+|} {"typeId": "org.mule.runtime.api.message.Message"}
+type com_mule_extensions_amqp_api_message_AmqpAttributes = {|
+  envelope: com_mule_extensions_amqp_api_message_Envelope {"typeAlias": "Envelope",
+  "typeId": "com.mule.extensions.amqp.api.message.Envelope"}, 
+  properties: com_mule_extensions_amqp_api_model_Properties {"typeId": "com.mule.extensions.amqp.api.model.Properties",
+  "typeAlias": "Properties"}, 
+  headers: { _?: java_lang_Object {"class": "java.lang.Object",
+    "typeAlias": "Object",
+    "typeId": "java.lang.Object"} }, 
+  ackId?: String
+|} {"typeId": "com.mule.extensions.amqp.api.message.AmqpAttributes",
+"class": "com.mule.extensions.amqp.api.message.AmqpAttributes",
+"typeAlias": "AmqpAttributes"}
+type com_mule_extensions_amqp_api_message_Envelope = {|
+  deliveryTag?: Number, 
+  redeliver?: Boolean {"typeId": "boolean"}, 
+  exchange?: String, 
+  routingKey?: String
+|} {"typeAlias": "Envelope",
+"typeId": "com.mule.extensions.amqp.api.message.Envelope"}
+
+
+type java_lang_Object = {|  |} {"class": "java.lang.Object",
+"typeAlias": "Object",
+"typeId": "java.lang.Object"}
+
+
+type com_mule_extensions_amqp_api_model_Properties = {|
+  contentType?: String, 
+  contentEncoding?: String, 
+  deliveryMode?: ("TRANSIENT" | "PERSISTENT") {"typeId": "com.mule.extensions.amqp.api.config.DeliveryMode"}, 
+  priority?: Number, 
+  correlationId?: String, 
+  replyTo?: String, 
+  expiration?: String, 
+  messageId?: String, 
+  timestamp?: Date {"class": "java.util.Date",
+  "typeId": "java.util.Date"}, 
+  "type"?: String, 
+  userId?: String, 
+  appId?: String, 
+  clusterId?: String
+|} {"typeId": "com.mule.extensions.amqp.api.model.Properties",
+"typeAlias": "Properties"}
+
+
+
+
+

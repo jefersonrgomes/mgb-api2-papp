@@ -1,0 +1,6 @@
+%dw 2.0
+
+type auto_59ac80f0_621d_45b8_b0be_f0d44d43eb10_Input_Variables_modelo = {|  |} {"class": "java.lang.Object",
+"typeAlias": "Object",
+"typeId": "java.lang.Object"}
+

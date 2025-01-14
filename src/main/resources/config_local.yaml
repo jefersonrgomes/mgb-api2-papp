@@ -1,0 +1,34 @@
+http:
+  host: "localhost"
+  port: "8082"
+  path: "/papp"
+  timeout: "900000"
+
+https:
+  private:
+    host: "localhost"
+    port: "8092"
+    path: "/sapi"
+    timeout: "900000"
+
+fipe:
+  host: "parallelum.com.br"
+  path: "/fipe/api/v1/{tipo-veiculo}"
+  timeout: "900000"
+  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjMjM4OTdjOS1hYjdiLTQ2ODAtOGQwOS0wOTk3MTI2NmRjMTIiLCJlbWFpbCI6ImplZmVyc29uLnJnb21lc0Bob3RtYWlsLmNvbSIsImlhdCI6MTczNjc5MzMzMX0.n6GC_hUgRoeKa5ElYPERiRDkgzkks7mC39p3fIeIpVA"
+  
+    
+    # https://parallelum.com.br/fipe/api/v1/{{veiculo}}/marcas/22/modelos
+    
+mgb-db-mssql:
+  host: "localhost"
+  port: "1433"
+  user: "as"
+  pass: "Guest1234$#@!"
+  
+
+mgb-mq-rabbitmq:
+  host: "localhost"
+  port: "5672"
+  user: "guest"
+  pass: "guest"

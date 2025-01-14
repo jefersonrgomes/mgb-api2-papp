@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd">
+
+	<http:request-config name="HTTP_Request_Fipe_configuration" doc:name="HTTP Request configuration" doc:id="9271765f-cffa-4d65-a0a7-bdf846d1d810" >
+		<http:request-connection host="${fipe.host}"/>
+	</http:request-config>
+	<flow name="mgb-api2-papp-modelo1-mainFlow" doc:id="9cfedd2e-f34d-4af3-aeb2-5cbbf01d8965" >
+		<amqp:listener doc:name="Listener" doc:id="3533b76b-3269-41af-8a8a-28caca0c4319" config-ref="AMQP_mgb-mq-rabbitmq_Config" queueName="post.marcas">
+			<amqp:fallback-queue-definition exchangeToBind="ex-mgb-post-marcas" bindingRoutingKey="1" />
+		</amqp:listener>
+		<logger level="INFO" doc:name="AMQP post.marcas - entrada" doc:id="23f0f3f7-57a9-4aa9-bfa8-4a80fc403343" message='#["******************************* AMQP post.marcas - entrada *******************************"]' />
+		<set-variable value="#[payload]" doc:name="originalPayload" doc:id="2d191720-c5ae-4d86-ab65-ec977df802d5" variableName="originalPayload"/>
+		<flow-ref doc:name="marcas-e-modelos" doc:id="dff8fa87-94df-47f7-97d4-5d80de2a8544" name="marcas-e-modelos"/>
+		<logger level="INFO" doc:name="AMQP post.marcas - saida" doc:id="c348b8a9-5ff0-4fb2-a38a-13794bc8211e" message='#["******************************* AMQP post.marcas - saida *******************************"]' />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b111bb19-f814-4a6d-928a-30312441097a" type="ANY" >
+				<ee:transform doc:name="error" doc:id="ab03d246-380b-44b8-8848-5d441c7c6317" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"ErrorType": error.errorType.identifier,
+	"ErrorDescription": error.description,
+	"EventID": correlationId,
+	("Custom": error.errorMessage.payload)
+	
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger-error-propagate" doc:id="f9c5c4d7-b81a-4970-adb5-dca77518d578" message="#[payload]" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<sub-flow name="marcas-e-modelos" doc:id="e03916d3-801e-4988-a7ea-84a01197d57e" >
+		<foreach doc:name="For Each" doc:id="6edc2a8c-5f0f-4e6a-9cf2-8ae61cdcae02" collection="#[vars.originalPayload]">
+			<set-variable value="#[payload]" doc:name="marca" doc:id="c1add298-b918-4571-86f9-8733861be1dc" variableName="marca" />
+			<set-variable value='#["/marcas/{marca}/modelos"]' doc:name="endpoint-get-modelos" doc:id="32429f6a-7638-48af-867f-02c19e64dc81" variableName="endpoint"/>
+			<set-variable value='#[output application/java&#10;---&#10;{&#10;	"marca" : payload.codigo,&#10;	"tipo-veiculo" : "carros"&#10;}]' doc:name="uriParametros" doc:id="fd701ddc-b4e2-403a-a81a-82895218eb2a" variableName="uriParametros" />
+			<flow-ref doc:name="dinamic-request-fipe" doc:id="6fee6cdf-b9fb-4807-8654-a3cc43a24e77" name="dinamic-request-fipe"/>
+			<set-variable value="#[payload]" doc:name="modelos" doc:id="58133d77-ce7d-4e0a-8564-76d164d7777d" variableName="modelos" />
+			<foreach doc:name="For Each" doc:id="b0ba5f88-bedb-4bd8-ba4b-a740fd6125ba" collection="#[vars.modelos.modelos]" >
+				<set-variable value="#[payload]" doc:name="modelo" doc:id="64b632ea-1bc9-43e1-bdf9-8177902c1418" variableName="modelo" />
+				<flow-ref doc:name="anos" doc:id="734f6b65-9025-4590-b41d-618368911aea" name="anos"/>
+			</foreach>
+		</foreach>
+	</sub-flow>
+	<sub-flow name="anos" doc:id="86cc668f-8e08-4694-8c76-e8d334362ee3">
+		<set-variable value='#["/marcas/{marca}/modelos/{modelo}/anos"&#10;&#10;//https://parallelum.com.br/fipe/api/v1/{{veiculo}}/marcas/1/modelos/1/anos]' doc:name="endpoint-get-anos" doc:id="b13a0fc6-ad6a-45f5-90ed-ec50e76bb042" variableName="endpoint" />
+		<set-variable value='#[output application/java&#10;---&#10;{&#10;	"marca" : vars.marca.codigo,&#10;	"modelo" : vars.modelo.codigo,&#10;	"tipo-veiculo" : "carros"&#10;}]' doc:name="uriParametros" doc:id="e158dcce-139a-4fd5-a75a-204ce9138e76" variableName="uriParametros" />
+		<flow-ref doc:name="dinamic-request-fipe" doc:id="30b4521a-6a53-4431-af2f-c6587130172d" name="dinamic-request-fipe" />
+		<set-variable value="#[payload]" doc:name="anos" doc:id="5a83746a-89cd-4bd1-8ab9-245cb19fcb0a" variableName="anos" />
+		<foreach doc:name="For Each" doc:id="d67c597a-1a1d-4ccf-b4e2-fa537365cf17" collection="#[vars.anos]">
+				<set-variable value="#[payload]" doc:name="ano" doc:id="ea5f4eb8-d419-4caa-88f8-69db0f94d2d0" variableName="ano" />
+				<flow-ref doc:name="dinamic-request-fipe" doc:id="f537797c-f60e-4d8f-9606-e3cd2b048557" name="dinamic-request-fipe" />
+				<flow-ref doc:name="valores" doc:id="4dcfeeb1-a1be-410f-ae94-13da7102b2ed" name="valores" />
+			</foreach>
+	</sub-flow>
+	<sub-flow name="valores" doc:id="59ac80f0-621d-45b8-b0be-f0d44d43eb10">
+		<set-variable value='#["/marcas/{marca}/modelos/{modelo}/anos/{ano}"]' doc:name="endpoint-get-valores" doc:id="08c45c0c-2222-4e4b-9620-e05683aca58a" variableName="endpoint" />
+		<set-variable value='#[output application/json&#10;---&#10;{&#10;	"marca" : vars.marca.codigo,&#10;	"modelo" : vars.modelo.codigo,&#10;	"ano": vars.ano.codigo,&#10;	"tipo-veiculo" : "carros"&#10;}]' doc:name="uriParametros" doc:id="27abf476-77d8-4394-9adf-5ab634d629d5" variableName="uriParametros" />
+		<flow-ref doc:name="dinamic-request-fipe" doc:id="a2687d5b-5f10-4b5a-a9ac-14ea2778230f" name="dinamic-request-fipe" />
+		<set-variable value='#[payload]' doc:name="valor" doc:id="15eda3fd-70de-4b36-8abb-d8f3fd120b5d" variableName="valor" />
+		<ee:transform doc:name="payload-insert-marcas" doc:id="e275a3ed-b209-473e-a0b7-ee6e79742a7f">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output text/plain
+---
+"INSERT INTO Veiculos (TipoVeiculo, Valor, Marca, CodigoModelo, NomeModelo, AnoModelo, Combustivel, CodigoFipe, MesReferencia, SiglaCombustivel)
+VALUES (:tipoVeiculo, :valor, :marca, :codigoModelo, :nomeModelo, :anoModelo, :combustivel, :codigoFipe, :mesReferencia, :siglaCombustivel);"
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"tipoVeiculo": 1,&#10;	"valor":  vars.valor.Valor,&#10;	"marca": vars.marca.nome,&#10;	"codigoModelo": vars.modelo.codigo,&#10;	"nomeModelo": vars.modelo.nome,&#10;	"anoModelo" : vars.ano.nome,&#10;	"combustivel":  vars.valor.Combustivel,&#10;	"codigoFipe": vars.valor.CodigoFipe,&#10;	"mesReferencia": vars.valor.MesReferencia,&#10;	"siglaCombustivel": vars.valor.SiglaCombustivel&#10;}]' doc:name="inputParams" doc:id="6d90e335-5b57-4cad-bc1a-5bdbe52b8694" variableName="inputParams" />
+		<flow-ref doc:name="dinamic-insert-db-sql-Sub_Flow" doc:id="a13f61c1-37b0-419f-bb4a-9491f7cfec1e" name="dinamic-insert-db-sql-Sub_Flow" />
+	</sub-flow>
+	<sub-flow name="dinamic-insert-db-sql-Sub_Flow" doc:id="6c63193e-0851-4b79-95cf-edb5b268e66d">
+		<try doc:name="Try" doc:id="2b47e297-3b77-4163-bb8b-3ef24c86b1a7">
+			<db:insert doc:name="insert-db-sql" doc:id="797af2f5-0322-4c60-9a2b-e4696b866e32" config-ref="MSSQL_Database_Config">
+			<db:sql><![CDATA[#[payload]]]></db:sql>
+			<db:input-parameters><![CDATA[#[vars.inputParams]]]></db:input-parameters>
+		</db:insert>
+			<logger level="INFO" doc:name="Logger-new-inser-db-sql" doc:id="4147ac98-df19-49d2-b43f-a2e98907957c" message='#[{&#10;	"Novo valor inserido na Tabela Veiculos no Database MGB-DB-MSSQL": payload&#10;}]' />
+			<error-handler>
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ccf317fb-af52-4c7a-8c37-3ce96a215afe" type="ANY">
+					<ee:transform doc:name="db-error" doc:id="700d4410-b9be-4035-a645-22d8b33a70a4">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"ErrorType": error.errorType.identifier,
+	"ErrorDescription": error.description,
+	"EventID": correlationId,
+	("Custom": error.errorMessage.payload)
+	
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<logger level="INFO" doc:name="Logger-error-propagate" doc:id="03f91a50-0b7b-4660-9544-15aea045bf18" message="#[payload]" />
+				</on-error-propagate>
+			</error-handler>
+		</try>
+	</sub-flow>
+	<sub-flow name="dinamic-request-fipe" doc:id="28fa787f-5706-4891-ba84-daa0bed8e079" >
+		<try doc:name="Try" doc:id="8e4e0eed-76b4-4daf-b873-ab2f3705c58f" >
+			<http:request method="GET" doc:name="request-fipe" doc:id="7229dd46-6244-49d7-a544-2c6e36802c9d" config-ref="HTTP_Request_Fipe_configuration" path="#[output application/json&#10;---&#10;p('fipe.path') ++ vars.endpoint]">
+				<http:headers><![CDATA[#[output application/java
+---
+{
+	"X-Subscription-Token" : p('fipe.token')
+}]]]></http:headers>
+				<http:uri-params><![CDATA[#[vars.uriParametros]]]></http:uri-params>
+			</http:request>
+			<logger level="INFO" doc:name="payload-new-inser-in-mgb-db" doc:id="c5b4694a-f056-4dbd-aa76-0de3f2ed7c2c" message='#[{&#10;	"new insert in MGB-DB": payload&#10;}]' />
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="43b6629e-97b0-4f80-9759-32d1172ad618" type="HTTP:INTERNAL_SERVER_ERROR, HTTP:TOO_MANY_REQUESTS, HTTP:UNAUTHORIZED">
+					<logger level="INFO" doc:name="Logger-error-propagate" doc:id="ebdf38a6-6ad3-4c51-90d0-1ba6a01e1ea4" message="#[payload]" />
+				</on-error-continue>
+			</error-handler>
+		</try>
+	</sub-flow>
+</mule>

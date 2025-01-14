@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd">
+	
+		<http:listener-config name="HTTP_Listener_mgb-api2-papp_config" doc:name="HTTP Listener config" doc:id="4f839dd9-87b1-457f-a172-474632d081a8" >
+		<http:listener-connection host="0.0.0.0" port="${http.port}" readTimeout="90000000"/>
+	</http:listener-config>
+	
+	<global-property doc:name="Global Property" doc:id="0255167d-dcae-4ace-9d30-382193d706dc" name="env" value="local" />
+	<configuration-properties doc:name="Configuration properties" doc:id="3a3917f3-55dc-4696-a958-50c16e883570" file="config_${env}.yaml" />
+	<configuration doc:name="Configuration" doc:id="fad066d2-cab4-4cb7-a116-516a7ce922c2" defaultErrorHandler-ref="global-error_handler" />
+    <apikit:config name="mgb-api1-sapi-config" api="resource::2564fa18-c0b0-424d-a4f0-68ff3a6579ea:mgb-api1-sapi:1.0.0:raml:zip:mgb-api1-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+ 	<db:config name="MSSQL_Database_Config" doc:name="Database Config" doc:id="0369b99b-1d9d-4abd-9242-7a957bf13165" >
+		<db:mssql-connection host="${mgb-db-mssql.host}" port="${mgb-db-mssql.port}" user="sa" password="${mgb-db-mssql.pass}" />
+	</db:config>
+	<amqp:config name="AMQP_mgb-mq-rabbitmq_Config" doc:name="AMQP Config" doc:id="ecd83180-8100-4e16-9cd7-b0b0741609a3" >
+		<amqp:connection host="${mgb-mq-rabbitmq.host}" port="${mgb-mq-rabbitmq.port}" username="${mgb-mq-rabbitmq.user}" password="${mgb-mq-rabbitmq.pass}" />
+	</amqp:config>
+
+</mule>
