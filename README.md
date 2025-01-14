@@ -82,8 +82,11 @@ O endpoint "/carga-inicial" é responsavel por realizar a carga inicial dos dado
 -> API FIPE: [FIPE API HTTP REST](https://deividfortuna.github.io/fipe/)
 
 ✅ 1.2 Implemente a lógica na API-1 para buscar as “marcas” no serviço da FIPE
+
 ✅ 1.3 Configure uma “fila” para receber as “marcas” da API-1 e enviar uma por vez para a API-2 para processamento assíncrono.
+
 ✅ 1.4 Implemente a lógica na API-2 para buscar os “códigos” e “modelos” dos veículos no serviço da FIPE com base nas “marcas” recebidas da fila.
+
 ✅ 1.5 Implemente a lógica na API-2 para salvar no banco de dados “SQL” as informações de "código", "marca" e "modelo" dos veículos encontrados no serviço da FIPE.
 
 ### Codigo Mulesoft
@@ -110,6 +113,7 @@ Foram criados 4 recursos:
 curl --location 'http://localhost:8081/api/veiculos/carga-inicial'
 
 ✅ 2 Crie um serviço REST na API-1 para buscar as "marcas" armazenadas no banco de dados.
+
 ✅ 3 Crie um serviço REST na API-1 para buscar os "códigos", "modelos" e “observações” dos
 veículos por "marca" no banco de dados.
 
