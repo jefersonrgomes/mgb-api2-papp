@@ -147,10 +147,3 @@ curl --location --request PUT 'http://localhost:8081/api/veiculos/038003-2' \
 
 
 ## TECNOLOGIAS UTILIZADAS: MuleSoft, Docker, Docker-Compose, SQL-Server, RabbitMQ
-
-### Observações: 
-Importante aplicar os conceitos e boas práticas de desenvolvimento e engenharia de software, ex.: padrões REST, SOLID, DDD, TDD e Design Patterns, - Contract First (Swagger), Clean Architecture, Clean Code, etc.
-
-Estes requisitos são importantes para avaliação.
-
-Prazo para Entrega 5 dias
