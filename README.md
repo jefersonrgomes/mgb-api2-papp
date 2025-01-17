@@ -7,7 +7,23 @@ Realize o download e instalação do Docker para seguir com a implantação do c
 
 ![image](https://github.com/user-attachments/assets/22f901cf-9905-43ef-85b6-d4c52561b700)
 
-# Instalando a imagem do RabbitMQ
+# Docker Compose file:
+Para acelerar a instalação dos containers do RabbitMQ e MSSQL, baixe o arquivo docker-compose.zip abaixo:
+
+[docker-compose.zip](https://github.com/user-attachments/files/18458267/docker-compose.zip)
+
+1 - Extraia o arquivo .zip e acesse o diretorio onde esta o arquivo docker-compose.yml
+
+2 - Neste diretorio clique com botão direito e acesse o terminal
+
+3 - no terminal execute o comando: 
+
+docker compose up
+
+NOTA: Em caso de falhas na execução do Docker compose, siga com os passos de instalação manual dos containers.
+A configuração do RabbitMQ para criação das Exchanges e Filas sera necessaria após criar os containers via docker compose.
+
+# Instalando manualmente a imagem do RabbitMQ
 
 Passo 1: Utilize o comando abaixo para realizar o download da imagem do RabbitMQ no Docker.
 
@@ -40,7 +56,7 @@ Após criar a Exchange e a Queue, acesse cada uma delas e faça o Binding de rot
 ![image](https://github.com/user-attachments/assets/1f494535-8005-4bb5-8017-e921a3fee586)
 
 
-# Instalando a imagem do Microsoft SQL Server 2022
+# Instalando manualmente a imagem do Microsoft SQL Server 2022
 
 Passo 1: Utilize o comando abaixo para realizar o download da imagem do MSSQL Server 2022.
 
