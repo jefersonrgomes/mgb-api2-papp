@@ -7,7 +7,10 @@ Realize o download e instalação do Docker para seguir com a implantação do c
 
 ![image](https://github.com/user-attachments/assets/22f901cf-9905-43ef-85b6-d4c52561b700)
 
-# Docker Compose file:
+# Docker Compose:
+
+![image](https://github.com/user-attachments/assets/795c8537-6e09-417c-b34a-36a7a92db8f2)
+
 Para acelerar a instalação dos containers do RabbitMQ e MSSQL, baixe o arquivo docker-compose.zip abaixo:
 
 [docker-compose.zip](https://github.com/user-attachments/files/18458267/docker-compose.zip)
@@ -19,6 +22,8 @@ Para acelerar a instalação dos containers do RabbitMQ e MSSQL, baixe o arquivo
 3 - no terminal execute o comando: 
 
 docker compose up
+
+![image](https://github.com/user-attachments/assets/235b3370-c82c-4602-95d5-5547476396c6)
 
 NOTA: Em caso de falhas na execução do Docker compose, siga com os passos de instalação manual dos containers.
 A configuração do RabbitMQ para criação das Exchanges e Filas sera necessaria após criar os containers via docker compose.
