@@ -1,11 +1,12 @@
 # Magnum Bank Chalenge API2 - mgb-api2-papp
 
-### TECNOLOGIAS UTILIZADAS: MuleSoft, Docker, Docker-Compose, SQL-Server, RabbitMQ
+## TECNOLOGIAS UTILIZADAS: MuleSoft, Docker, Docker-Compose, SQL-Server, RabbitMQ
 
-### Pre-requisitos: Docker for Windows.
+### Pre-requisitos: 
+
+# Docker para Windows.
+
 Realize o download e instalação do Docker para seguir com a implantação do containers das imagens do RabbitMQ e MSSQL.
-
-![image](https://github.com/user-attachments/assets/22f901cf-9905-43ef-85b6-d4c52561b700)
 
 # Docker Compose:
 
